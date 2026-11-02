@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct BlurtManApp: App {
+    @State private var blurtItems = BlurtItemStore()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(blurtItems)
         }
     }
 }
+
