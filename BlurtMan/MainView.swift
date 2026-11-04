@@ -7,45 +7,63 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct MainView: View {
     @Environment(BlurtItemStore.self) private var blurtItems
     @State private var newBlurtItem: String = ""
     @State private var newBlurtColor: Color = .blue
     
+    
+    
+    private let defaultColor: Color = .blue
+    
     var body: some View {
         VStack {
+            Spacer() 
             VStack {
+                Text("Today's Blurts")
+                    .font(.title)
+                    .fontWeight(.bold)
                 ForEach(blurtItems.items.filter {$0.isDueToday}) { blurtItem in
                     
                     HStack {
-                        Circle()
-                            .fill(blurtItem.color)
-                            .frame(width: 24, height: 24)
-                        Text(blurtItem.title)
                         Button() {
-                            blurtItems.markItemGood(blurtItem)
+                            blurtItems.toggleShowingOptions(blurtItem)
                         } label: {
-                            Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.green)
+                            Circle()
+                                .fill(blurtItem.color)
+                                .frame(width: 24, height: 24)
+                            Text(blurtItem.title)
+                        }
+                        if blurtItem.showingOptions {
+                            Button() {
+                                blurtItems.markItemGood(blurtItem)
+                            } label: {
+                                Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(.green)
+                                        .font(.title2)
+                            }
+                            Button {
+                                blurtItems.markItemMid(blurtItem)
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundStyle(.yellow)
                                     .font(.title2)
+                            }
+                            Button() {
+                                blurtItems.markItemBad(blurtItem)
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(.red)
+                                        .font(.title2)
+                            }
                         }
-                        Button {
-                            blurtItems.markItemMid(blurtItem)
-                        } label: {
-                            Image(systemName: "minus.circle.fill")
-                                .foregroundStyle(.gray)
-                                .font(.title2)
-                        }
-                        Button() {
-                            blurtItems.markItemBad(blurtItem)
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                    .foregroundStyle(.red)
-                                    .font(.title2)
-                        }
+                        
+                        
+                        
                     }
                 }
             }
+            Spacer()
             HStack {
                 ColorPicker("Select Color", selection: $newBlurtColor)
                     .padding()
@@ -53,6 +71,18 @@ struct ContentView: View {
                 TextField("Enter new item", text: $newBlurtItem)
                     .textFieldStyle(.roundedBorder)
                     .padding()
+                Button() {
+                    if newBlurtItem.trimmingCharacters(in: .whitespaces).count > 0 {
+                        blurtItems.items.append(BlurtItem(title: newBlurtItem, color: newBlurtColor))
+                        newBlurtColor = defaultColor
+                        newBlurtItem = ""
+                    }
+                    
+                } label: {
+                    Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.blue)
+                            .font(.title2)
+                }
             }
             
         }
