@@ -7,11 +7,17 @@
 
 import SwiftUI
 struct ContentView: View {
+    #if os(macOS)
     @State private var selectedTab = 0
+    #endif
+    #if os(iOS)
+    @State private var selectedTab = 1
+    #endif
     @Environment(BlurtItemStore.self) private var blurtItems
     
     var body: some View {
         TabView(selection: $selectedTab) {
+            #if os(macOS)
             Tab("Home", systemImage: "house", value: 0) {
                 MainView()
                     .environment(blurtItems)
@@ -21,6 +27,24 @@ struct ContentView: View {
                 CalendarView()
                     .environment(blurtItems)
             }
+            #endif
+            
+            #if os(iOS)
+            Tab("Settings", systemImage: "gearshape", value: 0) {
+                SettingsView()
+                    .environment(blurtItems)
+            }
+            Tab("Home", systemImage: "house", value: 1) {
+                MainView()
+                    .environment(blurtItems)
+            }
+            
+            Tab("Schedule", systemImage: "calendar", value: 2) {
+                CalendarView()
+                    .environment(blurtItems)
+            }
+            
+            #endif
             
         }
         #if os(iOS)

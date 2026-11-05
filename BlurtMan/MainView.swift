@@ -12,15 +12,13 @@ struct MainView: View {
     @State private var newBlurtItem: String = ""
     @State private var newBlurtColor: Color = .blue
     
-    
-    
     private let defaultColor: Color = .blue
     
     var body: some View {
         VStack {
             Spacer() 
             VStack {
-                Text("Today's Blurts")
+                Text(blurtItems.items.filter {$0.isDueToday}.count > 0 ? "Today's Blurts" : "No Blurts to Do!")
                     .font(.title)
                     .fontWeight(.bold)
                 ForEach(blurtItems.items.filter {$0.isDueToday}) { blurtItem in

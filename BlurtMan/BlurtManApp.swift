@@ -16,6 +16,18 @@ struct BlurtManApp: App {
             ContentView()
                 .environment(blurtItems)
         }
+        #if os(macOS)
+        Settings {
+            SettingsView()
+                .environment(blurtItems)
+        }
+        #endif
+    }
+    init() {
+        UserDefaults.standard.register(defaults: [
+            "dateIntervals": "1, 3, 7, 14, 30"
+        ])
+        blurtItems.setDates()
     }
 }
 

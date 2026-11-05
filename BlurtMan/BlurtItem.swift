@@ -21,12 +21,8 @@ struct BlurtItem: Identifiable {
         self.id = UUID()
         self.title = title
         self.color = color
-        let today = Date()
-        // remove 0 later currently its for debugging purposes
-        self.dates = [0, 3, 7, 14, 30].compactMap {
-            Calendar.current.date(byAdding: .day, value: $0, to: Calendar.current.startOfDay(for: today))
-        }
         self.showingOptions = false
+        self.dates = []
         // HOW THIS SYSTEM WOULD WORK: Blurt after 1 day, after 3 days, after 1 week, after 2 weeks then 1 month
         // If in the middle the user doesn't feel confident, there are two cases:
         // If confidence is mid, then reset the next blurt to be after 3 days
@@ -46,9 +42,32 @@ struct BlurtItem: Identifiable {
 
 @Observable
 class BlurtItemStore {
-    private let dateIntervals = [0, 3, 7, 14, 30]
+    private var dateIntervals: [Int] {
+        get {
+            guard let rawString = UserDefaults.standard.string(forKey: "dateIntervals") else {
+                return [1, 3, 7, 14, 30]
+            }
+            return rawString
+                .split {$0 == "," || $0.isWhitespace}
+                .compactMap{Int($0)}
+        } 
+    }
     
     var items: [BlurtItem] = [BlurtItem(title: "Math", color: .blue), BlurtItem(title: "Science", color: .red)]
+    
+    init() {
+        setDates()
+    }
+    
+    func setDates() {
+        for blurtItem in items {
+            let today = Date()
+            guard let i: Int = items.firstIndex(where:  {$0.id == blurtItem.id}) else {return}
+            items[i].dates = dateIntervals.compactMap{
+                Calendar.current.date (byAdding: .day, value: $0, to: Calendar.current.startOfDay(for: today))
+            }
+        }
+    }
     
     func markItemGood(_ item: BlurtItem) {
         guard let i: Int = items.firstIndex(where:  {$0.id == item.id}) else {return}
