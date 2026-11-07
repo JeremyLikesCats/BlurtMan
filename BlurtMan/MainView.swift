@@ -71,9 +71,7 @@ struct MainView: View {
                     .padding()
                 Button() {
                     if newBlurtItem.trimmingCharacters(in: .whitespaces).count > 0 {
-                        blurtItems.items.append(BlurtItem(title: newBlurtItem, color: newBlurtColor))
-                        newBlurtColor = defaultColor
-                        newBlurtItem = ""
+                        blurtItems.addItem(title: newBlurtItem, color: newBlurtColor)
                     }
                     
                 } label: {

@@ -9,18 +9,22 @@ import Observation
 import Foundation
 import SwiftUI
 
-struct BlurtItem: Identifiable {
+struct BlurtItem: Identifiable, Codable {
     let id: UUID
     var title: String
     var dates: [Date]
     var currentStage: Int = 0
-    var color: Color
+    var resolvedColor: Color.Resolved
+    var color: Color {
+        Color(resolvedColor)
+    }
     var showingOptions: Bool
+    
     
     init(title: String, color: Color) {
         self.id = UUID()
         self.title = title
-        self.color = color
+        self.resolvedColor = color.resolve(in: EnvironmentValues())
         self.showingOptions = false
         self.dates = []
         // HOW THIS SYSTEM WOULD WORK: Blurt after 1 day, after 3 days, after 1 week, after 2 weeks then 1 month
@@ -53,10 +57,42 @@ class BlurtItemStore {
         } 
     }
     
-    var items: [BlurtItem] = [BlurtItem(title: "Math", color: .blue), BlurtItem(title: "Science", color: .red)]
+    var items: [BlurtItem] = [] {
+        didSet {
+            save()
+        }
+    }
     
     init() {
-        setDates()
+        load()
+    }
+    
+    
+    private let blurtItemsSaveKey = "blurtItems"
+    private func save() {
+        if let encodedValues = try? JSONEncoder().encode(items) {
+            UserDefaults.standard.set(encodedValues, forKey: blurtItemsSaveKey)
+        }
+    }
+    private func load() {
+        // wow this is kinda confusing
+        if let savedBlurtItems = UserDefaults.standard.data(forKey: blurtItemsSaveKey),
+           let decodedValues = try? JSONDecoder().decode([BlurtItem].self, from: savedBlurtItems) {
+            self.items = decodedValues
+        } else {
+            // if nothing is saved yet then run this
+            self.items = [BlurtItem(title: "Math", color: .blue), BlurtItem(title: "Science", color: .red)]
+            self.setDates()
+        }
+    }
+    
+    func addItem(title: String, color: Color) {
+        var newBlurtItem = BlurtItem(title: title, color: color)
+        let today = Date()
+        newBlurtItem.dates = dateIntervals.compactMap{
+            Calendar.current.date (byAdding: .day, value: $0, to: Calendar.current.startOfDay(for: today))
+        }
+        items.append(newBlurtItem)
     }
     
     func setDates() {
@@ -103,7 +139,7 @@ class BlurtItemStore {
     func returnAsDateOrderedDict() -> [Date : [BlurtItem]] {
         var finalDictionary: [Date : [BlurtItem]] = [:]
         for item in items {
-            for date in item.dates {
+            for date in item.dates.dropFirst(item.currentStage) {
                 finalDictionary[date, default: []].append(item)
             }
         }

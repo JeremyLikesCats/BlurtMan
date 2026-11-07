@@ -34,6 +34,7 @@ struct ContentView: View {
                 SettingsView()
                     .environment(blurtItems)
             }
+
             Tab("Home", systemImage: "house", value: 1) {
                 MainView()
                     .environment(blurtItems)
@@ -49,7 +50,7 @@ struct ContentView: View {
         }
         #if os(iOS)
         .tabViewStyle(.page(indexDisplayMode: .never))
-        
+        .ignoresSafeArea()
         #endif
 
     }

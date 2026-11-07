@@ -15,6 +15,9 @@ struct BlurtManApp: App {
         WindowGroup {
             ContentView()
                 .environment(blurtItems)
+                .onAppear() {
+                    
+                }
         }
         #if os(macOS)
         Settings {
@@ -24,10 +27,7 @@ struct BlurtManApp: App {
         #endif
     }
     init() {
-        UserDefaults.standard.register(defaults: [
-            "dateIntervals": "1, 3, 7, 14, 30"
-        ])
-        blurtItems.setDates()
+        
     }
 }
 

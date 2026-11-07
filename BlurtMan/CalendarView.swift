@@ -16,6 +16,11 @@ struct CalendarView: View {
         
         ScrollView {
             VStack {
+                Spacer()
+                Text(blurtItems.returnAsDateOrderedDict().count > 0 ? "Blurt Schedule" : "No Blurts Scheduled!")
+                    .font(.title)
+                    .fontWeight(.bold)
+                
                 
                 ForEach(blurtItems.returnAsDateOrderedDict().keys.sorted(), id: \.self) { blurtItemListKey in
                     VStack {
@@ -40,9 +45,8 @@ struct CalendarView: View {
                 
             }
             .frame(maxWidth: .infinity, alignment: .center)
-            .padding(35)
+            .padding(40)
         }
-        .ignoresSafeArea(edges: .top)
         
     }
     
