@@ -105,6 +105,12 @@ class BlurtItemStore {
         }
     }
     
+    func updateReminders() {
+        // Updates reminders based on current subject schedules.
+        
+        
+    }
+    
     func markItemGood(_ item: BlurtItem) {
         guard let i: Int = items.firstIndex(where:  {$0.id == item.id}) else {return}
         items[i].currentStage += 1

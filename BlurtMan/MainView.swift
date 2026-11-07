@@ -72,6 +72,8 @@ struct MainView: View {
                 Button() {
                     if newBlurtItem.trimmingCharacters(in: .whitespaces).count > 0 {
                         blurtItems.addItem(title: newBlurtItem, color: newBlurtColor)
+                        newBlurtItem = ""
+                        
                     }
                     
                 } label: {
