@@ -9,8 +9,10 @@ import SwiftUI
 
 struct MainView: View {
     @Environment(BlurtItemStore.self) private var blurtItems
+    @Environment(CalendarModel.self) private var calendarModel
     @State private var newBlurtItem: String = ""
     @State private var newBlurtColor: Color = .blue
+    @State private var showDuplicateError: Bool = false
     
     private let defaultColor: Color = .blue
     
@@ -34,21 +36,21 @@ struct MainView: View {
                         }
                         if blurtItem.showingOptions {
                             Button() {
-                                blurtItems.markItemGood(blurtItem)
+                                blurtItems.markItemGood(blurtItem, calendarModel: calendarModel)
                             } label: {
                                 Image(systemName: "checkmark.circle.fill")
                                         .foregroundStyle(.green)
                                         .font(.title2)
                             }
                             Button {
-                                blurtItems.markItemMid(blurtItem)
+                                blurtItems.markItemMid(blurtItem, calendarModel: calendarModel)
                             } label: {
                                 Image(systemName: "minus.circle.fill")
                                     .foregroundStyle(.yellow)
                                     .font(.title2)
                             }
                             Button() {
-                                blurtItems.markItemBad(blurtItem)
+                                blurtItems.markItemBad(blurtItem, calendarModel: calendarModel)
                             } label: {
                                 Image(systemName: "xmark.circle.fill")
                                         .foregroundStyle(.red)
@@ -71,9 +73,8 @@ struct MainView: View {
                     .padding()
                 Button() {
                     if newBlurtItem.trimmingCharacters(in: .whitespaces).count > 0 {
-                        blurtItems.addItem(title: newBlurtItem, color: newBlurtColor)
+                        showDuplicateError = blurtItems.addItem(title: newBlurtItem, color: newBlurtColor, calendarModel: calendarModel)
                         newBlurtItem = ""
-                        
                     }
                     
                 } label: {
@@ -81,6 +82,9 @@ struct MainView: View {
                             .foregroundStyle(.blue)
                             .font(.title2)
                 }
+            }
+            if !showDuplicateError {
+                Text("Couldn't add subject; Subject already exists.")
             }
             
         }
@@ -91,4 +95,5 @@ struct MainView: View {
 #Preview {
     ContentView()
         .environment(BlurtItemStore())
+        .environment(CalendarModel())
 }

@@ -6,7 +6,7 @@
 //
 
 import EventKit
-public import Combine
+import Combine
 
 // i used https://www.createwithswift.com/creating-reminder-lists-with-eventkit-from-your-app/ to learn initially lol
 
@@ -14,9 +14,10 @@ public import Combine
 
 
 @MainActor
-class CalendarModel: ObservableObject {
+@Observable
+class CalendarModel {
     private let eventStore = EKEventStore()
-    @Published var calendar: EKCalendar?
+    var calendar: EKCalendar?
     
     private let calendarUserdefaultsKey = "blurtManCalendar"
     private let calendarTitle = "BlurtMan"
@@ -24,11 +25,12 @@ class CalendarModel: ObservableObject {
     
     func setup() async {
         do {
-            let granted = try await eventStore.requestWriteOnlyAccessToEvents()
+            let granted = try await eventStore.requestFullAccessToEvents()
             guard granted else {return}
             calendar = try loadAppCalendar()
+            
         } catch {
-            print("Reminders access error:", error.localizedDescription)
+            print("Calendar access error:", error.localizedDescription)
         }
         
     }
@@ -42,6 +44,7 @@ class CalendarModel: ObservableObject {
         // Otherwise search by name
         if let existing = eventStore.calendars(for: .event).first(where: { $0.title == calendarTitle }) {
             UserDefaults.standard.set(existing.calendarIdentifier, forKey: calendarUserdefaultsKey)
+            return existing
         }
         
         // Otherwise create the calendar
@@ -58,8 +61,61 @@ class CalendarModel: ObservableObject {
         return newCalendar
     }
 
+    func updateCalendarForItem(item: BlurtItem, allDayAlertTime: String) throws {
+        // ALL DAY VERSION
+        
+        try clearCalendarBasedOnItemName(title: item.title)
+        let datesToUpdate = item.dates
+        for dateToUpdate in datesToUpdate {
+            let newEvent = EKEvent(eventStore: eventStore)
+            newEvent.title = item.title
+            newEvent.calendar = calendar
+            newEvent.isAllDay = true
+            newEvent.startDate = Calendar.current.startOfDay(for: dateToUpdate)
+            newEvent.endDate = newEvent.startDate
+            newEvent.addAlarm(EKAlarm(relativeOffset: getTimeInterval(from: allDayAlertTime)))
+            try eventStore.save(newEvent, span: .thisEvent, commit: false)
+        }
+        try eventStore.commit()
+    }
     
-    func clearCalendarBasedOnEventName(title: String) throws {
+    func updateCalendarForItem(item: BlurtItem, startTime: String, endTime: String) throws {
+        // NON ALL DAY VERSION
+        try clearCalendarBasedOnItemName(title: item.title)
+        let datesToUpdate = item.dates
+        for dateToUpdate in datesToUpdate {
+            let newEvent = EKEvent(eventStore: eventStore)
+            newEvent.title = item.title
+            newEvent.calendar = calendar
+            newEvent.isAllDay = false
+            
+            let start = getDateFromTime(time: startTime, day: dateToUpdate)
+            var end = getDateFromTime(time: endTime, day: dateToUpdate)
+            
+            if let start, let e = end, e < start {
+                end = Calendar.current.date(byAdding: .hour, value: 1, to: start)
+            }
+            
+            newEvent.startDate = start
+            newEvent.endDate = end
+            
+            try eventStore.save(newEvent, span: .thisEvent, commit: false)
+        }
+        try eventStore.commit()
+    }
+    
+    
+    func getTimeInterval(from time: String) -> TimeInterval {
+        let parts = time.split(separator: ":").compactMap{ Int($0) }
+        return TimeInterval(parts[0] * 3600 + parts[1] * 60)
+    }
+    
+    func getDateFromTime(time: String, day: Date) -> Date? {
+        let parts = time.split(separator: ":").compactMap{ Int($0) }
+        return Calendar.current.date(bySettingHour: parts[0], minute: parts[1], second: 0, of: day)
+    }
+    
+    func clearCalendarBasedOnItemName(title: String) throws {
         guard let currentCalendar = calendar else { return }
         
         let start = Calendar.current.startOfDay(for: .now)

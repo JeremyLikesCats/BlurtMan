@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CalendarView: View {
     @Environment(BlurtItemStore.self) private var blurtItems
+    @Environment(CalendarModel.self) private var calendarModel
     @State private var newBlurtItem: String = ""
     @State private var newBlurtColor: Color = .blue
     
@@ -17,7 +18,7 @@ struct CalendarView: View {
         ScrollView {
             VStack {
                 Spacer()
-                Text(blurtItems.returnAsDateOrderedDict().count > 0 ? "Blurt Schedule" : "No Blurts Scheduled!")
+                Text(blurtItems.returnAsDateOrderedDict().count > 0 ? "Upcoming Blurt Schedule" : "No Upcoming Blurts Scheduled!")
                     .font(.title)
                     .fontWeight(.bold)
                 
@@ -91,4 +92,5 @@ struct CalendarView: View {
 #Preview {
     ContentView()
         .environment(BlurtItemStore())
+        .environment(CalendarModel())
 }

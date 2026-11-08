@@ -26,7 +26,7 @@ struct BlurtItem: Identifiable, Codable {
         self.title = title
         self.resolvedColor = color.resolve(in: EnvironmentValues())
         self.showingOptions = false
-        self.dates = []
+        self.dates = [Date()]
         // HOW THIS SYSTEM WOULD WORK: Blurt after 1 day, after 3 days, after 1 week, after 2 weeks then 1 month
         // If in the middle the user doesn't feel confident, there are two cases:
         // If confidence is mid, then reset the next blurt to be after 3 days
@@ -86,55 +86,93 @@ class BlurtItemStore {
         }
     }
     
-    func addItem(title: String, color: Color) {
+    func addItem(title: String, color: Color, calendarModel: CalendarModel) -> Bool {
+        for item in items {
+            if item.title == title {
+                return false
+            }
+        }
         var newBlurtItem = BlurtItem(title: title, color: color)
         let today = Date()
         newBlurtItem.dates = dateIntervals.compactMap{
             Calendar.current.date (byAdding: .day, value: $0, to: Calendar.current.startOfDay(for: today))
         }
         items.append(newBlurtItem)
+        
+        updateCalendar(item: newBlurtItem, calendarModel: calendarModel)
+        return true
+    }
+    
+    func updateCalendar(item: BlurtItem, calendarModel: CalendarModel) {
+        if UserDefaults.standard.bool(forKey: "calendarSpecifyTime") == false {
+            do {
+                try calendarModel.updateCalendarForItem(item: item, allDayAlertTime: UserDefaults.standard.string(forKey: "calendarAlertTime") ?? "19:00")
+            } catch {
+                print("Failed to add to calendar.")
+            }
+            
+        } else {
+            do {
+                try calendarModel.updateCalendarForItem(item: item, startTime: UserDefaults.standard.string(forKey: "calendarStartTime") ?? "19:00", endTime: UserDefaults.standard.string(forKey: "calendarEndTime") ?? "20:00")
+                print(UserDefaults.standard.string(forKey: "calendarStartTime"), UserDefaults.standard.string(forKey: "calendarEndTime"))
+            } catch {
+                print("Failed to add to calendar")
+            }
+            
+        }
     }
     
     func setDates() {
         for blurtItem in items {
-            let today = Date()
             guard let i: Int = items.firstIndex(where:  {$0.id == blurtItem.id}) else {return}
             items[i].dates = dateIntervals.compactMap{
-                Calendar.current.date (byAdding: .day, value: $0, to: Calendar.current.startOfDay(for: today))
+                Calendar.current.date (byAdding: .day, value: $0, to: Calendar.current.startOfDay(for: Date()))
             }
         }
     }
     
-    func updateReminders() {
-        // Updates reminders based on current subject schedules.
-        
-        
-    }
-    
-    func markItemGood(_ item: BlurtItem) {
+    func markItemGood(_ item: BlurtItem, calendarModel: CalendarModel) {
         guard let i: Int = items.firstIndex(where:  {$0.id == item.id}) else {return}
         items[i].currentStage += 1
         items[i].showingOptions = false
     }
     
-    func markItemMid(_ item: BlurtItem) {
+    func markItemMid(_ item: BlurtItem, calendarModel: CalendarModel) {
         guard let i: Int = items.firstIndex(where:  {$0.id == item.id}) else {return}
-        self.reschedule(item: item, firstStage: 1)
+        self.reschedule(item: item, firstStage: 1, calendarModel: calendarModel)
         items[i].showingOptions = false
     }
     
-    func markItemBad(_ item: BlurtItem) {
+    func markItemBad(_ item: BlurtItem, calendarModel: CalendarModel) {
         guard let i: Int = items.firstIndex(where:  {$0.id == item.id}) else {return}
-        self.reschedule(item: item, firstStage: 0)
+        self.reschedule(item: item, firstStage: 0, calendarModel: calendarModel)
         items[i].showingOptions = false
     }
     
-    func reschedule(item: BlurtItem, firstStage: Int) {
+    func removeItem(_ item: BlurtItem, calendarModel: CalendarModel) {
+        guard let i: Int = items.firstIndex(where:  {$0.id == item.id}) else {return}
+        do {
+            try calendarModel.clearCalendarBasedOnItemName(title: items[i].title)
+        } catch {
+            print("Couldn't remove item from calendar.")
+        }
+        self.items.remove(at: i)
+    }
+    
+    func resetCalendar(calendarModel: CalendarModel) {
+        for blurtItem in items {
+            updateCalendar(item: blurtItem, calendarModel: calendarModel)
+        }
+    }
+    
+    func reschedule(item: BlurtItem, firstStage: Int, calendarModel: CalendarModel) {
         guard let i: Int = items.firstIndex(where:  {$0.id == item.id}) else {return}
         let today = Date()
-        items[i].dates = dateIntervals[firstStage...].compactMap {
+        items[i].dates = dateIntervals.dropFirst(firstStage).compactMap {
             Calendar.current.date(byAdding: .day, value: $0, to: Calendar.current.startOfDay(for: today))
         }
+        updateCalendar(item: items[i], calendarModel: calendarModel)
+        
     }
     
     func toggleShowingOptions(_ item: BlurtItem) {
