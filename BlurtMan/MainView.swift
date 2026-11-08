@@ -73,7 +73,7 @@ struct MainView: View {
                     .padding()
                 Button() {
                     if newBlurtItem.trimmingCharacters(in: .whitespaces).count > 0 {
-                        showDuplicateError = blurtItems.addItem(title: newBlurtItem, color: newBlurtColor, calendarModel: calendarModel)
+                        showDuplicateError = !blurtItems.addItem(title: newBlurtItem, color: newBlurtColor, calendarModel: calendarModel)
                         newBlurtItem = ""
                     }
                     
@@ -83,7 +83,7 @@ struct MainView: View {
                             .font(.title2)
                 }
             }
-            if !showDuplicateError {
+            if showDuplicateError {
                 Text("Couldn't add subject; Subject already exists.")
             }
             
