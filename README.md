@@ -20,16 +20,16 @@ If you're like me and you're studying many subjects at once, it's difficult to k
 ## Showcase
 
 ### App Icon
-<img src="Screenshots/appicon.png" alt="drawing" height="200"/>
+<img src="Screenshots/appicon.png" alt="drawing" height="400"/>
 
 ### Home Screen
-<img src="Screenshots/homepage.png" alt="drawing" height="200"/>
+<img src="Screenshots/homepage.png" alt="drawing" height="400"/>
 
 ### Settings
-<img src="Screenshots/settings.png" alt="drawing" height="200"/>
+<img src="Screenshots/settings.png" alt="drawing" height="400"/>
 
 ### Schedule
-<img src="Screenshots/schedule.png" alt="drawing" height="200"/>
+<img src="Screenshots/schedule.png" alt="drawing" height="400"/>
 
 ### Calendar Integration
-<img src="Screenshots/calendar_integration.png" alt="drawing" height="200"/>
+<img src="Screenshots/calendar_integration.png" alt="drawing" height="400"/>
