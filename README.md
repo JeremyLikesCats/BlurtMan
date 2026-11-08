@@ -21,16 +21,16 @@ If you're like me and you're studying many subjects at once, it's difficult to k
 
 ### App Icon
 
-![App Icon](Screenshots/appicon.png) height=200
+![App Icon](Screenshots/appicon.png) {height=200}
 
 ### Home Screen
-![Home Page](Screenshots/homepage.png) height=200
+![Home Page](Screenshots/homepage.png) {height=200}
 
 ### Settings
-![Settings](Screenshots/settings.png) height=200
+![Settings](Screenshots/settings.png) {height=200}
 
 ### Schedule
-![Schedule](Screenshots/schedule.png) height=200
+![Schedule](Screenshots/schedule.png) {height=200}
 
 ### Calendar Integration
-![Calendar Integration](Screenshots/calendar_integration.png) height=200
+![Calendar Integration](Screenshots/calendar_integration.png) {height=200}
