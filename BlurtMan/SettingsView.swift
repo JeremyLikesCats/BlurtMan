@@ -47,6 +47,7 @@ struct SettingsView: View {
                         }
                 }
                 
+                
                 Section("Calendar Integration") {
                     Toggle("Specify Blurt Timing", isOn: $specifyTime)
                         .onChange(of: specifyTime) {
@@ -120,11 +121,12 @@ struct SettingsView: View {
             }
             
         }
-        
 
     }
+        
 }
 #Preview {
     SettingsView()
         .environment(BlurtItemStore())
+        .environment(CalendarModel())
 }

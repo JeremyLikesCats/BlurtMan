@@ -1,3 +1,5 @@
+**(NOTE: The iOS version probably looks a bit nicer than the mac version/is more stable since I mainly focused on the iOS version)**
+
 # BlurtMan
 
 BlurtMan is an iOS/macOS app I created for Hack Club Terra week 3. It's pretty barebones right now, and I'll probably expand it in the future.

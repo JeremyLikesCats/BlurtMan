@@ -114,9 +114,7 @@ class BlurtItemStore {
         } else {
             do {
                 try calendarModel.updateCalendarForItem(item: item, startTime: UserDefaults.standard.string(forKey: "calendarStartTime") ?? "19:00", endTime: UserDefaults.standard.string(forKey: "calendarEndTime") ?? "20:00")
-                print(UserDefaults.standard.string(forKey: "calendarStartTime"), UserDefaults.standard.string(forKey: "calendarEndTime"))
             } catch {
-                print("Failed to add to calendar")
             }
             
         }
