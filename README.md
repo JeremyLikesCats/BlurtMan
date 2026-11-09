@@ -11,6 +11,8 @@ To test the app on iOS, it probably needs to be sideloaded - here's two options 
 AltStore - https://faq.altstore.io/
 SideStore - https://docs.sidestore.io/docs/installation/prerequisites
 
+Alternatively, and maybe more easily, if you are on a mac, you can open the project in xcode and look at the preview after clicking into some files like ContentView.swift. You can also try to build it to your own phone if you know how to.
+
 ## What is blurting?
 
 Blurting is a very effective way of spaced reptition that essentially brute forces your memory. In every blurt session, you would take out a piece of paper and write down everything you know about a certain subject. At the end, you would see what you missed and have a clear idea of gaps in your knowledge, allowing you to target these gaps and increase your knowledge in the most effective way. 
