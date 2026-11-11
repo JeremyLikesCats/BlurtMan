@@ -5,8 +5,15 @@
 BlurtMan is an iOS/macOS app I created for Hack Club Terra week 3. It's pretty barebones right now, and I'll probably expand it in the future.
 
 ## How to run
-Running the app on mac is simple - download the zip, extract it, and if it says something along the lines of "untrusted app", then go into System Settings -> Privacy & Security -> Scroll to the bottom and click "Open Anyway".
 
+## macOS
+Running the app on mac is simple:
+
+1. download the zip, extract it
+2. run the .app file. if it says something along the lines of "untrusted app", then go into System Settings -> Privacy & Security -> Scroll to the bottom and click "Open Anyway".
+
+
+## iOS
 To test the app's iOS version, it can be simulated on XCode. Here are the steps:
 
 ### 1. Open XCode + Clone
