@@ -7,11 +7,28 @@ BlurtMan is an iOS/macOS app I created for Hack Club Terra week 3. It's pretty b
 ## How to run
 Running the app on mac is simple - download the zip, extract it, and if it says something along the lines of "untrusted app", then go into System Settings -> Privacy & Security -> Scroll to the bottom and click "Open Anyway".
 
-To test the app on iOS, it probably needs to be sideloaded - here's two options I know of to set that up:
-AltStore - https://faq.altstore.io/
-SideStore - https://docs.sidestore.io/docs/installation/prerequisites
+To test the app's iOS version, it can be simulated on XCode. Here are the steps:
 
-Alternatively, and maybe more easily, if you are on a mac, you can open the project in xcode and look at the preview after clicking into some files like ContentView.swift. You can also try to build it to your own phone if you know how to.
+### 1. Open XCode + Clone
+
+If you don't already have XCode, download it from the App Store.
+
+Once you have opened XCode, click "Clone".
+
+<img src="Screenshots/step1.png" alt="drawing" height="400"/>
+
+Then paste in the URL of this repository: https://github.com/JeremyLikesCats/BlurtMan.git
+
+### 2. Open the project and run
+The project should automatically open. Once you're in the page, select the destination and set it to be an iPhone 17.
+
+<img src="Screenshots/step2.png" alt="drawing" height="400"/>
+
+### 3. Run the project!
+Then just click the run button on the top left to run the app on the simulated iPhone 17!
+
+<img src="Screenshots/step3.png" alt="drawing" height="400"/>
+
 
 ## What is blurting?
 
