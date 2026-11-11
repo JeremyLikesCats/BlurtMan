@@ -26,8 +26,8 @@ Once you have opened XCode, click "Clone".
 
 Then paste in the URL of this repository: https://github.com/JeremyLikesCats/BlurtMan.git
 
-### 2. Open the project and run
-The project should automatically open. Once you're in the page, select the destination and set it to be an iPhone 17.
+### 2. Open the project and select target
+The project should automatically open. Once you're in the page, select the target at the top and set it to be an iPhone 17.
 
 <img src="Screenshots/step2.png" alt="drawing" height="400"/>
 
